@@ -12,7 +12,7 @@ import (
 	"github.com/tmc/langchaingo/llms"
 )
 
-type claudeV2Request struct {
+type Claude2Request struct {
 	Prompt            string   `json:"prompt"`
 	MaxTokensToSample int      `json:"max_tokens_to_sample"`
 	Temperature       float64  `json:"temperature,omitempty"`
@@ -21,11 +21,11 @@ type claudeV2Request struct {
 	StopSequences     []string `json:"stop_sequences,omitempty"`
 }
 
-type claudeV2Response struct {
+type Claude2Response struct {
 	Completion string `json:"completion"`
 }
 
-func (l *LLM) generateContentWithClaudeV2(ctx context.Context, messages []llms.MessageContent, opts *llms.CallOptions) (*llms.ContentResponse, error) {
+func (l *LLM) generateContentWithClaude2(ctx context.Context, messages []llms.MessageContent, opts *llms.CallOptions) (*llms.ContentResponse, error) {
 	if len(messages) != 1 {
 		return nil, errors.New("only one message is supported")
 	}
@@ -60,7 +60,7 @@ func (l *LLM) generateContentWithClaudeV2(ctx context.Context, messages []llms.M
 		prompt = prompt + "\n\nAssistant:"
 	}
 
-	payload := claudeV2Request{
+	payload := Claude2Request{
 		Prompt:            prompt,
 		MaxTokensToSample: opts.MaxTokens,
 		Temperature:       opts.Temperature,
@@ -74,14 +74,14 @@ func (l *LLM) generateContentWithClaudeV2(ctx context.Context, messages []llms.M
 		return nil, fmt.Errorf("failed to marshal payload: %w", err)
 	}
 	output, err := l.client.InvokeModel(ctx, &bedrockruntime.InvokeModelInput{
-		ModelId:     aws.String("anthropic.claude-instant-v1"),
+		ModelId:     aws.String(opts.Model),
 		Body:        payloadBytes,
 		ContentType: aws.String("application/json"),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to invoke model: %w", err)
 	}
-	var resp claudeV2Response
+	var resp Claude2Response
 	if err := json.Unmarshal(output.Body, &resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response: %w", err)
 	}

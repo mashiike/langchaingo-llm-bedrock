@@ -60,7 +60,7 @@ func (l *LLM) CreateEmbedding(ctx context.Context, texts []string) ([][]float32,
 }
 
 func (l *LLM) GenerateContent(ctx context.Context, messages []llms.MessageContent, options ...llms.CallOption) (*llms.ContentResponse, error) {
-	l.logger.Debug("bedrock.LLM.GenerateContent called", "messages", messages)
+	l.logger.Debug("bedrock.LLM.GenerateContent called", "messages_count", len(messages))
 	if l.CallbacksHandler != nil {
 		l.CallbacksHandler.HandleLLMGenerateContentStart(ctx, messages)
 	}
@@ -74,8 +74,10 @@ func (l *LLM) GenerateContent(ctx context.Context, messages []llms.MessageConten
 	var resp *llms.ContentResponse
 	var err error
 	switch l.model {
-	case ClaudeV2, ClaudeInstant:
-		resp, err = l.generateContentWithClaudeV2(ctx, messages, opts)
+	case Claude2, ClaudeInstant:
+		resp, err = l.generateContentWithClaude2(ctx, messages, opts)
+	case Claude3Sonnet, Claude3Haiku:
+		resp, err = l.generateContentWithClaude3(ctx, messages, opts)
 	default:
 		err = fmt.Errorf("model `%s` not supported", l.model)
 	}

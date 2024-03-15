@@ -2,6 +2,7 @@ package bedrock_test
 
 import (
 	"context"
+	_ "embed"
 	"flag"
 	"log/slog"
 	"os"
@@ -48,14 +49,14 @@ func TestCreateEmbeddingWithTaitan(t *testing.T) {
 	require.Greater(t, dis1, dis2)
 }
 
-func TestGenerateContentWithClaudeV2(t *testing.T) {
+func TestGenerateContentWithClaude2(t *testing.T) {
 	if !*flagUseRemote {
 		t.Skip("skipping test; use -use-remote to enable")
 	}
 	llm, err := bedrock.New(
 		bedrock.WithLogger(slog.Default()),
 		bedrock.WithTemperature(0.1),
-		bedrock.WithModel(bedrock.ClaudeV2),
+		bedrock.WithModel(bedrock.Claude2),
 	)
 	require.NoError(t, err)
 	resp, err := llm.GenerateContent(context.Background(), []llms.MessageContent{
@@ -64,5 +65,53 @@ func TestGenerateContentWithClaudeV2(t *testing.T) {
 これまで記録された中で最も重いカバは？」`),
 	})
 	require.NoError(t, err)
+	t.Log(resp.Choices[0].Content)
 	require.Contains(t, resp.Choices[0].Content, "わかりません")
+}
+
+func TestGenerateContentWithClaude3Haiku(t *testing.T) {
+	if !*flagUseRemote {
+		t.Skip("skipping test; use -use-remote to enable")
+	}
+	llm, err := bedrock.New(
+		bedrock.WithLogger(slog.Default()),
+		bedrock.WithTemperature(0.1),
+		bedrock.WithModel(bedrock.Claude3Haiku),
+	)
+	require.NoError(t, err)
+	resp, err := llm.GenerateContent(context.Background(), []llms.MessageContent{
+		llms.TextParts(schema.ChatMessageTypeHuman,
+			`答えを知っているか、あるいは十分な推測ができる場合のみ、以下の質問に答えてください。答えられない場合は『わかりません』を出力してください。
+これまで記録された中で最も重いカバは？」`),
+	})
+	require.NoError(t, err)
+	t.Log(resp.Choices[0].Content)
+	require.Contains(t, resp.Choices[0].Content, "わかりません")
+}
+
+//go:embed testdata/lgtm.png
+var image []byte
+
+func TestGenerateContentWithClaude3HaikuWithImage(t *testing.T) {
+	if !*flagUseRemote {
+		t.Skip("skipping test; use -use-remote to enable")
+	}
+	llm, err := bedrock.New(
+		bedrock.WithLogger(slog.Default()),
+		bedrock.WithTemperature(0.1),
+		bedrock.WithModel(bedrock.Claude3Haiku),
+	)
+	require.NoError(t, err)
+	resp, err := llm.GenerateContent(context.Background(), []llms.MessageContent{
+		{
+			Role: schema.ChatMessageTypeHuman,
+			Parts: []llms.ContentPart{
+				llms.BinaryPart("image/png", image),
+				llms.TextPart("この画像に書かれてる単語は何？"),
+			},
+		},
+	})
+	require.NoError(t, err)
+	t.Log(resp.Choices[0].Content)
+	require.Contains(t, resp.Choices[0].Content, "LGTM")
 }
