@@ -6,7 +6,6 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.25.3
 	github.com/aws/aws-sdk-go-v2/config v1.27.7
 	github.com/aws/aws-sdk-go-v2/service/bedrockruntime v1.7.2
-	github.com/sebdah/goldie/v2 v2.5.3
 	github.com/stretchr/testify v1.8.4
 	github.com/tmc/langchaingo v0.1.5
 )
@@ -29,6 +28,5 @@ require (
 	github.com/google/uuid v1.4.0 // indirect
 	github.com/pkoukk/tiktoken-go v0.1.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/sergi/go-diff v1.0.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
