@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: gomod
+    directory: "/"
+    schedule:
+      interval: weekly
+      time: "20:00"
+    open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: "aws*"
+        update-types: ["version-update:semver-patch"]
+    labels:
+      - "dependencies"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    open-pull-requests-limit: 5
+    schedule:
+      interval: "weekly"
+      time: "20:00"
+    labels:
+      - "dependencies"
