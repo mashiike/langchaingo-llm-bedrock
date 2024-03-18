@@ -2,8 +2,8 @@
 
 for `github.com/tmc/langchaingo` Amazon Bedrock LLM interface implement
 
-[![GoDoc](https://godoc.org/github.com/mashiike/ github.com/mashiike/langchaingo-llm-bedrock?status.svg)](https://godoc.org/github.com/mashiike/ github.com/mashiike/langchaingo-llm-bedrock)
-[![Go Report Card](https://goreportcard.com/badge/github.com/mashiike/ github.com/mashiike/langchaingo-llm-bedrock)](https://goreportcard.com/report/github.com/mashiike/ github.com/mashiike/langchaingo-llm-bedrock)
+[![GoDoc](https://godoc.org/github.com/mashiike/langchaingo-llm-bedrock?status.svg)](https://godoc.org/github.com/mashiike/langchaingo-llm-bedrock)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mashiike/langchaingo-llm-bedrock)](https://goreportcard.com/report/github.com/mashiike/langchaingo-llm-bedrock)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Example
