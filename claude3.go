@@ -254,14 +254,25 @@ func (l *LLM) generateContentWithClaude3(ctx context.Context, messages []llms.Me
 		return nil, fmt.Errorf("failed to unmarshal response: %w", err)
 	}
 	l.logger.Debug("generate content with claude v3", "id", resp.ID, "role", resp.Role, "stop_reason", resp.StopReason, "stop_sequence", resp.StopSequence, "type", resp.Type, "usage", resp.Usage)
-	llmResponse := &llms.ContentResponse{}
+	var builder strings.Builder
 	for _, content := range resp.Content {
-		llmResponse.Choices = append(llmResponse.Choices, &llms.ContentChoice{
-			Content: content.Text,
-			GenerationInfo: map[string]interface{}{
-				"model": resp.Model,
+		builder.WriteString(content.Text)
+	}
+	llmResponse := &llms.ContentResponse{
+		Choices: []*llms.ContentChoice{
+			{
+				Content:    builder.String(),
+				StopReason: resp.StopReason,
+				GenerationInfo: map[string]interface{}{
+					"id":                  resp.ID,
+					"model":               opts.Model,
+					"usage.input_tokens":  resp.Usage.InputTokens,
+					"usage.output_tokens": resp.Usage.OutputTokens,
+					"stop_sequence":       resp.StopSequence,
+					"role":                resp.Role,
+				},
 			},
-		})
+		},
 	}
 	return llmResponse, nil
 }
